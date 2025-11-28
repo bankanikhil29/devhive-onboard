@@ -2,6 +2,8 @@ export type UserRole = 'admin' | 'member';
 
 export type OnboardingStatus = 'not_started' | 'in_progress' | 'completed';
 
+export type CommentEntityType = 'document' | 'assignment';
+
 export interface User {
   id: string;
   workspaceId: string;
@@ -79,6 +81,7 @@ export interface OnboardingAssignment {
   status: OnboardingStatus;
   startedAt?: string;
   completedAt?: string;
+  dueAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -89,6 +92,17 @@ export interface OnboardingAssignmentItemStatus {
   checklistItemTemplateId: string;
   status: OnboardingStatus;
   completedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Comment {
+  id: string;
+  workspaceId: string;
+  entityType: CommentEntityType;
+  entityId: string;
+  authorUserId: string;
+  content: string;
   createdAt: string;
   updatedAt: string;
 }

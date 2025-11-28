@@ -8,6 +8,8 @@ import type {
   OnboardingChecklistItemTemplate,
   OnboardingAssignment,
   OnboardingAssignmentItemStatus,
+  Comment,
+  CommentEntityType,
 } from '@/types';
 
 interface AppContextType {
@@ -19,6 +21,7 @@ interface AppContextType {
   templateItems: OnboardingChecklistItemTemplate[];
   assignments: OnboardingAssignment[];
   assignmentStatuses: OnboardingAssignmentItemStatus[];
+  comments: Comment[];
   users: User[];
   login: (email: string, password: string) => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'admin' | 'member') => Promise<void>;
@@ -35,8 +38,17 @@ interface AppContextType {
   createAssignment: (data: Omit<OnboardingAssignment, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'assignedByUserId'>) => void;
   updateAssignmentStatus: (assignmentId: string, itemId: string, status: 'not_started' | 'in_progress' | 'completed') => void;
   createUser: (data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'>) => void;
+  createComment: (entityType: CommentEntityType, entityId: string, content: string) => void;
+  deleteComment: (commentId: string) => void;
+  getComments: (entityType: CommentEntityType, entityId: string) => Comment[];
   searchGlobal: (query: string) => { documents: Document[]; templates: OnboardingChecklistTemplate[]; assignments: OnboardingAssignment[] };
   getAssignmentProgress: (assignmentId: string) => number;
+  getAtRiskStatus: (assignment: OnboardingAssignment) => 'overdue' | 'due-soon' | 'on-time' | null;
+  getInsightsMetrics: (projectId?: string) => {
+    avgCompletionDays: number;
+    statusCounts: { not_started: number; in_progress: number; completed: number };
+    assignmentsOverTime: { date: string; count: number }[];
+  };
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -53,6 +65,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [templateItems, setTemplateItems] = useState<OnboardingChecklistItemTemplate[]>([]);
   const [assignments, setAssignments] = useState<OnboardingAssignment[]>([]);
   const [assignmentStatuses, setAssignmentStatuses] = useState<OnboardingAssignmentItemStatus[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
 
   const login = async (email: string, password: string) => {
@@ -279,6 +292,85 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return Math.round((completed / statuses.length) * 100);
   };
 
+  const createComment = (entityType: CommentEntityType, entityId: string, content: string) => {
+    if (!currentUser) return;
+    
+    const sanitized = content.trim().replace(/<script[^>]*>.*?<\/script>/gi, '').slice(0, 1000);
+    if (!sanitized) return;
+
+    const comment: Comment = {
+      id: generateId(),
+      workspaceId: currentUser.workspaceId,
+      entityType,
+      entityId,
+      authorUserId: currentUser.id,
+      content: sanitized,
+      createdAt: now(),
+      updatedAt: now(),
+    };
+    setComments(prev => [...prev, comment]);
+  };
+
+  const deleteComment = (commentId: string) => {
+    setComments(prev => prev.filter(c => c.id !== commentId));
+  };
+
+  const getComments = (entityType: CommentEntityType, entityId: string) => {
+    if (!currentUser) return [];
+    return comments
+      .filter(c => c.workspaceId === currentUser.workspaceId && c.entityType === entityType && c.entityId === entityId)
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+  };
+
+  const getAtRiskStatus = (assignment: OnboardingAssignment): 'overdue' | 'due-soon' | 'on-time' | null => {
+    if (!assignment.dueAt || assignment.status === 'completed') return null;
+    
+    const dueDate = new Date(assignment.dueAt);
+    const nowDate = new Date();
+    const diffDays = Math.ceil((dueDate.getTime() - nowDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (diffDays < 0) return 'overdue';
+    if (diffDays <= 3) return 'due-soon';
+    return 'on-time';
+  };
+
+  const getInsightsMetrics = (projectId?: string) => {
+    if (!currentUser) return { avgCompletionDays: 0, statusCounts: { not_started: 0, in_progress: 0, completed: 0 }, assignmentsOverTime: [] };
+    
+    let filtered = assignments.filter(a => a.workspaceId === currentUser.workspaceId);
+    if (projectId) {
+      filtered = filtered.filter(a => a.projectId === projectId);
+    }
+
+    const completed = filtered.filter(a => a.status === 'completed' && a.completedAt && a.createdAt);
+    const totalDays = completed.reduce((sum, a) => {
+      const start = new Date(a.startedAt || a.createdAt);
+      const end = new Date(a.completedAt!);
+      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      return sum + days;
+    }, 0);
+    const avgCompletionDays = completed.length > 0 ? Math.round(totalDays / completed.length) : 0;
+
+    const statusCounts = {
+      not_started: filtered.filter(a => a.status === 'not_started').length,
+      in_progress: filtered.filter(a => a.status === 'in_progress').length,
+      completed: filtered.filter(a => a.status === 'completed').length,
+    };
+
+    const weekCounts = new Map<string, number>();
+    filtered.forEach(a => {
+      const date = new Date(a.createdAt);
+      const weekStart = new Date(date.setDate(date.getDate() - date.getDay()));
+      const key = weekStart.toISOString().split('T')[0];
+      weekCounts.set(key, (weekCounts.get(key) || 0) + 1);
+    });
+    const assignmentsOverTime = Array.from(weekCounts.entries())
+      .map(([date, count]) => ({ date, count }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    return { avgCompletionDays, statusCounts, assignmentsOverTime };
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -290,6 +382,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         templateItems,
         assignments,
         assignmentStatuses,
+        comments,
         users,
         login,
         signup,
@@ -306,8 +399,13 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         createAssignment,
         updateAssignmentStatus,
         createUser,
+        createComment,
+        deleteComment,
+        getComments,
         searchGlobal,
         getAssignmentProgress,
+        getAtRiskStatus,
+        getInsightsMetrics,
       }}
     >
       {children}

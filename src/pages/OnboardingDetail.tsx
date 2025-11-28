@@ -1,6 +1,8 @@
 import { useParams, Link } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { useApp } from '@/contexts/AppContext';
+import { CommentsSection } from '@/components/CommentsSection';
+import { AtRiskBadge } from '@/components/AtRiskBadge';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,7 +12,7 @@ import { Clock, FileText } from 'lucide-react';
 
 export default function OnboardingDetail() {
   const { id } = useParams();
-  const { currentUser, assignments, assignmentStatuses, templateItems, templates, projects, users, documents, updateAssignmentStatus } = useApp();
+  const { currentUser, assignments, assignmentStatuses, templateItems, templates, projects, users, documents, updateAssignmentStatus, getAtRiskStatus } = useApp();
 
   if (!currentUser) return null;
 
@@ -20,6 +22,7 @@ export default function OnboardingDetail() {
   const template = templates.find(t => t.id === assignment.checklistTemplateId);
   const project = projects.find(p => p.id === assignment.projectId);
   const assignee = users.find(u => u.id === assignment.assignedToUserId);
+  const atRiskStatus = getAtRiskStatus(assignment);
   const items = templateItems
     .filter(i => i.checklistTemplateId === assignment.checklistTemplateId)
     .sort((a, b) => a.orderIndex - b.orderIndex);
@@ -57,15 +60,21 @@ export default function OnboardingDetail() {
               <div className="flex items-center gap-4 text-sm text-muted-foreground">
                 <span>Project: {project?.name}</span>
                 {currentUser.role === 'admin' && <span>Assignee: {assignee?.name}</span>}
+                {assignment.dueAt && (
+                  <span>Due: {new Date(assignment.dueAt).toLocaleDateString()}</span>
+                )}
               </div>
             </div>
-            <Badge variant={
-              assignment.status === 'completed' ? 'default' : 
-              assignment.status === 'in_progress' ? 'secondary' : 
-              'outline'
-            } className="text-sm">
-              {assignment.status.replace('_', ' ')}
-            </Badge>
+            <div className="flex gap-2">
+              <Badge variant={
+                assignment.status === 'completed' ? 'default' : 
+                assignment.status === 'in_progress' ? 'secondary' : 
+                'outline'
+              } className="text-sm">
+                {assignment.status.replace('_', ' ')}
+              </Badge>
+              <AtRiskBadge status={atRiskStatus} />
+            </div>
           </div>
         </div>
 
@@ -134,6 +143,8 @@ export default function OnboardingDetail() {
             );
           })}
         </div>
+
+        <CommentsSection entityType="assignment" entityId={assignment.id} />
       </div>
     </Layout>
   );

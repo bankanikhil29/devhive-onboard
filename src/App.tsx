@@ -11,6 +11,7 @@ import ProjectDetail from "./pages/ProjectDetail";
 import DocumentDetail from "./pages/DocumentDetail";
 import Onboarding from "./pages/Onboarding";
 import OnboardingDetail from "./pages/OnboardingDetail";
+import Insights from "./pages/Insights";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import TemplateNew from "./pages/TemplateNew";
@@ -34,6 +35,7 @@ const App = () => (
             <Route path="/documents/:id" element={<DocumentDetail />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/onboarding/:id" element={<OnboardingDetail />} />
+            <Route path="/insights" element={<Insights />} />
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/templates/new" element={<TemplateNew />} />

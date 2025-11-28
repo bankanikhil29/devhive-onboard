@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Layout } from '@/components/Layout';
 import { useApp } from '@/contexts/AppContext';
+import { CommentsSection } from '@/components/CommentsSection';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -96,6 +97,8 @@ export default function DocumentDetail() {
         <div className="prose max-w-none">
           <div className="whitespace-pre-wrap bg-muted/50 rounded-lg p-6">{doc.content}</div>
         </div>
+
+        <CommentsSection entityType="document" entityId={doc.id} />
 
         {/* Edit Dialog */}
         <Dialog open={editOpen} onOpenChange={setEditOpen}>
