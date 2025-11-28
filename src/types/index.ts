@@ -4,6 +4,11 @@ export type OnboardingStatus = 'not_started' | 'in_progress' | 'completed';
 
 export type CommentEntityType = 'document' | 'assignment';
 
+// Demo mode constants
+export const DEMO_WORKSPACE_ID = 'demo-workspace-acme';
+export const DEMO_ADMIN_EMAIL = 'demo_admin@devhive.local';
+export const DEMO_DEV_EMAIL = 'demo_dev@devhive.local';
+
 export interface User {
   id: string;
   workspaceId: string;

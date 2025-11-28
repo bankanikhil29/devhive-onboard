@@ -13,7 +13,7 @@ import { Plus, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings() {
-  const { currentUser, users, createUser, projects, createAssignment, templates } = useApp();
+  const { currentUser, users, createUser, projects, createAssignment, templates, isDemoUser } = useApp();
   const { toast } = useToast();
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -24,6 +24,12 @@ export default function Settings() {
 
   const handleCreateUser = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    
+    if (isDemoUser()) {
+      toast({ title: 'Demo Mode', description: 'Cannot invite users in demo workspace', variant: 'destructive' });
+      return;
+    }
+
     const formData = new FormData(e.currentTarget);
     const name = formData.get('name') as string;
     const email = formData.get('email') as string;

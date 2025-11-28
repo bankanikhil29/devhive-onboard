@@ -11,6 +11,7 @@ import type {
   Comment,
   CommentEntityType,
 } from '@/types';
+import { DEMO_WORKSPACE_ID, DEMO_ADMIN_EMAIL, DEMO_DEV_EMAIL } from '@/types';
 
 interface AppContextType {
   currentUser: User | null;
@@ -24,8 +25,10 @@ interface AppContextType {
   comments: Comment[];
   users: User[];
   login: (email: string, password: string) => Promise<void>;
+  loginAsGuest: () => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'admin' | 'member') => Promise<void>;
   logout: () => void;
+  isDemoUser: () => boolean;
   createWorkspace: (data: Omit<Workspace, 'id' | 'createdAt' | 'updatedAt'>) => void;
   createProject: (data: Omit<Project, 'id' | 'createdAt' | 'updatedAt'>) => void;
   createDocument: (data: Omit<Document, 'id' | 'createdAt' | 'updatedAt'>) => void;
@@ -67,6 +70,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [assignmentStatuses, setAssignmentStatuses] = useState<OnboardingAssignmentItemStatus[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [demoSeeded, setDemoSeeded] = useState(false);
 
   const login = async (email: string, password: string) => {
     const user = users.find(u => u.email === email);
@@ -109,6 +113,443 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const logout = () => setCurrentUser(null);
+
+  const isDemoUser = () => {
+    if (!currentUser) return false;
+    return currentUser.workspaceId === DEMO_WORKSPACE_ID;
+  };
+
+  const seedDemoData = () => {
+    if (demoSeeded) return;
+
+    // Create demo workspace
+    const demoWorkspace: Workspace = {
+      id: DEMO_WORKSPACE_ID,
+      name: 'Acme Dev Co - Demo',
+      description: 'Demo workspace showcasing DevHive features',
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    // Create demo users
+    const demoAdmin: User = {
+      id: 'demo-admin-id',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Demo Admin',
+      email: DEMO_ADMIN_EMAIL,
+      role: 'admin',
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+
+    const demoDev: User = {
+      id: 'demo-dev-id',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Alex Developer',
+      email: DEMO_DEV_EMAIL,
+      role: 'member',
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+
+    // Create demo projects
+    const backendProject: Project = {
+      id: 'demo-project-backend',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Backend API (Java)',
+      description: 'REST API service built with Spring Boot',
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    const frontendProject: Project = {
+      id: 'demo-project-frontend',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Web App (React)',
+      description: 'Customer-facing web application',
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    const dataProject: Project = {
+      id: 'demo-project-data',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Data Pipeline',
+      description: 'ETL and analytics infrastructure',
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    // Create demo documents for backend project
+    const backendDocs: Document[] = [
+      {
+        id: 'demo-doc-backend-1',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        title: 'Architecture Overview',
+        summary: 'High-level system design and component interactions',
+        content: '# Architecture Overview\n\nOur backend follows a microservices architecture with three main services:\n\n## Core Services\n- **API Gateway**: Routes requests and handles authentication\n- **User Service**: Manages user accounts and profiles\n- **Order Service**: Processes orders and payments\n\n## Infrastructure\n- PostgreSQL for persistent data\n- Redis for caching\n- RabbitMQ for async messaging',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-backend-2',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        title: 'Local Setup Guide',
+        summary: 'Step-by-step instructions to run the backend locally',
+        content: '# Local Setup Guide\n\n## Prerequisites\n- Java 17+\n- Docker Desktop\n- Maven 3.8+\n\n## Steps\n1. Clone the repository\n2. Run `docker-compose up -d` to start dependencies\n3. Run `mvn clean install` to build\n4. Run `mvn spring-boot:run` to start the API\n5. Access at http://localhost:8080',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-backend-3',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        title: 'Coding Standards',
+        summary: 'Team conventions for code style and best practices',
+        content: '# Coding Standards\n\n## General Guidelines\n- Follow Google Java Style Guide\n- Write unit tests for all business logic\n- Use meaningful variable names\n\n## Code Review Checklist\n- All tests passing\n- No commented-out code\n- Proper error handling\n- Documentation for public APIs',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-backend-4',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        title: 'Deploy Process',
+        summary: 'How to deploy to staging and production',
+        content: '# Deploy Process\n\n## Staging Deployment\n1. Merge PR to `develop` branch\n2. CI/CD automatically deploys to staging\n3. Run smoke tests\n\n## Production Deployment\n1. Create release branch from `develop`\n2. Tag with version number\n3. Manual approval required\n4. Monitor metrics post-deploy',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create demo documents for frontend project
+    const frontendDocs: Document[] = [
+      {
+        id: 'demo-doc-frontend-1',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        title: 'Component Library',
+        summary: 'Reusable UI components and design system',
+        content: '# Component Library\n\n## Core Components\n- Button (primary, secondary, ghost)\n- Input (text, email, password)\n- Card (with header, content, footer)\n\n## Usage\nImport from `@/components/ui` and use consistent props across the app.',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-frontend-2',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        title: 'State Management',
+        summary: 'How we handle application state',
+        content: '# State Management\n\nWe use Context API for global state and React Query for server state.\n\n## Global State\n- User session\n- Theme preferences\n\n## Server State\n- API data caching\n- Optimistic updates',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create demo documents for data project
+    const dataDocs: Document[] = [
+      {
+        id: 'demo-doc-data-1',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-data',
+        title: 'Pipeline Architecture',
+        summary: 'ETL workflow and data processing stages',
+        content: '# Pipeline Architecture\n\n## Data Flow\n1. Extract: Pull data from source systems\n2. Transform: Clean and enrich data\n3. Load: Store in data warehouse\n\n## Technologies\n- Apache Airflow for orchestration\n- Python for transformations\n- Snowflake for storage',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create demo templates
+    const backendTemplate: OnboardingChecklistTemplate = {
+      id: 'demo-template-backend',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-backend',
+      name: 'Backend Developer Onboarding',
+      description: 'Complete this checklist to get up to speed on our backend systems',
+      createdByUserId: 'demo-admin-id',
+      isActive: true,
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    const frontendTemplate: OnboardingChecklistTemplate = {
+      id: 'demo-template-frontend',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-frontend',
+      name: 'Frontend Developer Onboarding',
+      description: 'Learn our frontend stack and conventions',
+      createdByUserId: 'demo-admin-id',
+      isActive: true,
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    // Create template items for backend
+    const backendTemplateItems: OnboardingChecklistItemTemplate[] = [
+      {
+        id: 'demo-item-backend-1',
+        checklistTemplateId: 'demo-template-backend',
+        title: 'Read Architecture Overview',
+        description: 'Understand our microservices architecture',
+        orderIndex: 1,
+        estimatedMinutes: 30,
+        linkedDocumentId: 'demo-doc-backend-1',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-backend-2',
+        checklistTemplateId: 'demo-template-backend',
+        title: 'Set up local environment',
+        description: 'Get the backend running on your machine',
+        orderIndex: 2,
+        estimatedMinutes: 60,
+        linkedDocumentId: 'demo-doc-backend-2',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-backend-3',
+        checklistTemplateId: 'demo-template-backend',
+        title: 'Review Coding Standards',
+        description: 'Learn our code style and best practices',
+        orderIndex: 3,
+        estimatedMinutes: 20,
+        linkedDocumentId: 'demo-doc-backend-3',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-backend-4',
+        checklistTemplateId: 'demo-template-backend',
+        title: 'Complete first bugfix',
+        description: 'Pick a starter issue and submit a PR',
+        orderIndex: 4,
+        estimatedMinutes: 120,
+        linkedDocumentId: null,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create template items for frontend
+    const frontendTemplateItems: OnboardingChecklistItemTemplate[] = [
+      {
+        id: 'demo-item-frontend-1',
+        checklistTemplateId: 'demo-template-frontend',
+        title: 'Explore Component Library',
+        description: 'Review our UI components and design system',
+        orderIndex: 1,
+        estimatedMinutes: 30,
+        linkedDocumentId: 'demo-doc-frontend-1',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-frontend-2',
+        checklistTemplateId: 'demo-template-frontend',
+        title: 'Learn State Management',
+        description: 'Understand Context API and React Query usage',
+        orderIndex: 2,
+        estimatedMinutes: 45,
+        linkedDocumentId: 'demo-doc-frontend-2',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create demo assignments
+    const completedAssignment: OnboardingAssignment = {
+      id: 'demo-assignment-completed',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-data',
+      checklistTemplateId: 'demo-template-backend',
+      assignedToUserId: 'demo-dev-id',
+      assignedByUserId: 'demo-admin-id',
+      status: 'completed',
+      dueAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      startedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+      completedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+      createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+
+    const inProgressAssignment: OnboardingAssignment = {
+      id: 'demo-assignment-inprogress',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-backend',
+      checklistTemplateId: 'demo-template-backend',
+      assignedToUserId: 'demo-dev-id',
+      assignedByUserId: 'demo-admin-id',
+      status: 'in_progress',
+      dueAt: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+      startedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+      completedAt: undefined,
+      createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+
+    const overdueAssignment: OnboardingAssignment = {
+      id: 'demo-assignment-overdue',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-frontend',
+      checklistTemplateId: 'demo-template-frontend',
+      assignedToUserId: 'demo-dev-id',
+      assignedByUserId: 'demo-admin-id',
+      status: 'not_started',
+      dueAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      startedAt: undefined,
+      completedAt: undefined,
+      createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+
+    // Create assignment statuses
+    const backendStatuses: OnboardingAssignmentItemStatus[] = backendTemplateItems.map((item, idx) => ({
+      id: `demo-status-backend-${idx}`,
+      onboardingAssignmentId: 'demo-assignment-inprogress',
+      checklistItemTemplateId: item.id,
+      status: idx < 2 ? 'completed' : 'not_started' as 'not_started' | 'in_progress' | 'completed',
+      completedAt: idx < 2 ? new Date(Date.now() - (2 - idx) * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      createdAt: now(),
+      updatedAt: now(),
+    }));
+
+    const frontendStatuses: OnboardingAssignmentItemStatus[] = frontendTemplateItems.map((item, idx) => ({
+      id: `demo-status-frontend-${idx}`,
+      onboardingAssignmentId: 'demo-assignment-overdue',
+      checklistItemTemplateId: item.id,
+      status: 'not_started',
+      completedAt: undefined,
+      createdAt: now(),
+      updatedAt: now(),
+    }));
+
+    // Create demo comments
+    const demoComments: Comment[] = [
+      {
+        id: 'demo-comment-1',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-backend-2',
+        authorUserId: 'demo-dev-id',
+        content: 'Quick question: do we need Docker Enterprise or is Docker Desktop sufficient for local dev?',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-2',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-backend-2',
+        authorUserId: 'demo-admin-id',
+        content: 'Docker Desktop is fine! No need for Enterprise for local development.',
+        createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-3',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'assignment',
+        entityId: 'demo-assignment-inprogress',
+        authorUserId: 'demo-admin-id',
+        content: 'Great progress so far! Let me know when you are ready to pair on the bugfix task.',
+        createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-4',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'assignment',
+        entityId: 'demo-assignment-overdue',
+        authorUserId: 'demo-admin-id',
+        content: 'Hey Alex, noticed this is past due. Any blockers I can help with?',
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+      },
+    ];
+
+    // Set all demo data
+    setWorkspaces(prev => {
+      const existing = prev.find(w => w.id === DEMO_WORKSPACE_ID);
+      return existing ? prev : [...prev, demoWorkspace];
+    });
+    setUsers(prev => {
+      const hasDemo = prev.some(u => u.email === DEMO_ADMIN_EMAIL);
+      return hasDemo ? prev : [...prev, demoAdmin, demoDev];
+    });
+    setProjects(prev => {
+      const hasDemo = prev.some(p => p.id === 'demo-project-backend');
+      return hasDemo ? prev : [...prev, backendProject, frontendProject, dataProject];
+    });
+    setDocuments(prev => {
+      const hasDemo = prev.some(d => d.id === 'demo-doc-backend-1');
+      return hasDemo ? prev : [...prev, ...backendDocs, ...frontendDocs, ...dataDocs];
+    });
+    setTemplates(prev => {
+      const hasDemo = prev.some(t => t.id === 'demo-template-backend');
+      return hasDemo ? prev : [...prev, backendTemplate, frontendTemplate];
+    });
+    setTemplateItems(prev => {
+      const hasDemo = prev.some(i => i.id === 'demo-item-backend-1');
+      return hasDemo ? prev : [...prev, ...backendTemplateItems, ...frontendTemplateItems];
+    });
+    setAssignments(prev => {
+      const hasDemo = prev.some(a => a.id === 'demo-assignment-completed');
+      return hasDemo ? prev : [...prev, completedAssignment, inProgressAssignment, overdueAssignment];
+    });
+    setAssignmentStatuses(prev => {
+      const hasDemo = prev.some(s => s.id === 'demo-status-backend-0');
+      return hasDemo ? prev : [...prev, ...backendStatuses, ...frontendStatuses];
+    });
+    setComments(prev => {
+      const hasDemo = prev.some(c => c.id === 'demo-comment-1');
+      return hasDemo ? prev : [...prev, ...demoComments];
+    });
+
+    setDemoSeeded(true);
+  };
+
+  const loginAsGuest = async () => {
+    seedDemoData();
+    const demoUser = users.find(u => u.email === DEMO_ADMIN_EMAIL) || {
+      id: 'demo-admin-id',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Demo Admin',
+      email: DEMO_ADMIN_EMAIL,
+      role: 'admin' as const,
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+    setCurrentUser(demoUser);
+  };
 
   const createWorkspace = (data: Omit<Workspace, 'id' | 'createdAt' | 'updatedAt'>) => {
     const workspace: Workspace = {
@@ -385,8 +826,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         comments,
         users,
         login,
+        loginAsGuest,
         signup,
         logout,
+        isDemoUser,
         createWorkspace,
         createProject,
         createDocument,
