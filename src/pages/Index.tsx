@@ -145,7 +145,7 @@ export default function Index() {
                   variant="outline"
                   className="min-w-[180px] bg-transparent border-2 border-marketing-text-muted/30 text-marketing-text hover:bg-marketing-text-muted/10 hover:border-marketing-text-muted/50 font-semibold text-base px-8 py-6 rounded-lg transition-all"
                 >
-                  Watch Demo
+                  Try Demo
                 </Button>
               </div>
 
