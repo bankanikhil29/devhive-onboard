@@ -71,7 +71,10 @@ export const Layout = ({ children }: LayoutProps) => {
           </div>
           <Button
             variant="ghost"
-            onClick={logout}
+            onClick={() => {
+              logout();
+              navigate('/auth');
+            }}
             className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
           >
             <LogOut className="w-4 h-4 mr-2" />
@@ -158,6 +161,7 @@ export const Layout = ({ children }: LayoutProps) => {
               onClick={() => {
                 logout();
                 setMobileMenuOpen(false);
+                navigate('/auth');
               }}
               className="w-full justify-start text-sidebar-foreground hover:bg-sidebar-accent"
             >
