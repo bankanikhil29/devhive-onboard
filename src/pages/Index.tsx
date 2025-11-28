@@ -180,15 +180,15 @@ export default function Index() {
                     className="w-full h-full object-cover"
                   />
                   
-                  {/* Floating Card Overlay - Bottom Right with horizontal float animation */}
-                  <div className="absolute bottom-8 right-8 bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 rounded-xl p-4 shadow-xl animate-float-x">
+                  {/* Floating Card Overlay - Bottom Left with vertical float animation */}
+                  <div className="absolute -bottom-6 -left-6 p-4 rounded-xl bg-card border border-border shadow-card animate-float">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-marketing-teal/20 flex items-center justify-center">
-                        <Github className="w-5 h-5 text-marketing-text" />
+                      <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <Github className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <div className="text-sm font-semibold text-marketing-text">Auto-synced docs</div>
-                        <div className="text-xs text-marketing-text-muted">Always up-to-date</div>
+                        <div className="text-sm font-medium">Auto-synced docs</div>
+                        <div className="text-xs text-muted-foreground">Always up-to-date</div>
                       </div>
                     </div>
                   </div>
