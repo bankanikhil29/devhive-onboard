@@ -11,6 +11,9 @@ import type {
   Comment,
   CommentEntityType,
   WaitlistSubscriber,
+  RepoConnection,
+  CodeModule,
+  ExportKind,
 } from '@/types';
 import { DEMO_WORKSPACE_ID, DEMO_ADMIN_EMAIL, DEMO_DEV_EMAIL } from '@/types';
 
@@ -26,6 +29,8 @@ interface AppContextType {
   comments: Comment[];
   users: User[];
   waitlistSubscribers: WaitlistSubscriber[];
+  repoConnections: RepoConnection[];
+  codeModules: CodeModule[];
   login: (email: string, password: string) => Promise<void>;
   loginAsDemo: () => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'admin' | 'member') => Promise<void>;
@@ -55,6 +60,15 @@ interface AppContextType {
     assignmentsOverTime: { date: string; count: number }[];
   };
   submitWaitlist: (email: string, role?: string) => Promise<void>;
+  connectRepo: (projectId: string, repoUrl: string, defaultBranch: string, token: string) => Promise<void>;
+  generateCodeDocs: (projectId: string) => Promise<void>;
+  getRepoConnection: (projectId: string) => RepoConnection | undefined;
+  searchGlobalWithCode: (query: string) => { 
+    documents: Document[]; 
+    templates: OnboardingChecklistTemplate[]; 
+    assignments: OnboardingAssignment[];
+    codeModules: CodeModule[];
+  };
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -74,6 +88,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [comments, setComments] = useState<Comment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [waitlistSubscribers, setWaitlistSubscribers] = useState<WaitlistSubscriber[]>([]);
+  const [repoConnections, setRepoConnections] = useState<RepoConnection[]>([]);
+  const [codeModules, setCodeModules] = useState<CodeModule[]>([]);
   const [demoSeeded, setDemoSeeded] = useState(false);
 
   const login = async (email: string, password: string) => {
@@ -829,6 +845,160 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       return hasDemo ? prev : [...prev, ...demoComments];
     });
 
+    // Seed demo repo connections
+    const demoRepoConnections: RepoConnection[] = [
+      {
+        id: 'demo-repo-backend',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        provider: 'github',
+        repoUrl: 'https://github.com/acme-dev/backend-api',
+        defaultBranch: 'main',
+        status: 'connected',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+        createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-repo-frontend',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        provider: 'github',
+        repoUrl: 'https://github.com/acme-dev/web-app',
+        defaultBranch: 'main',
+        status: 'connected',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
+        createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+    ];
+
+    // Seed demo code modules
+    const demoCodeModules: CodeModule[] = [
+      // Backend API modules
+      {
+        id: 'demo-code-1',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        repoConnectionId: 'demo-repo-backend',
+        filePath: 'src/controllers/userController.ts',
+        exportName: 'createUser',
+        exportKind: 'function',
+        description: 'Creates a new user account with validation and error handling',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-2',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        repoConnectionId: 'demo-repo-backend',
+        filePath: 'src/controllers/userController.ts',
+        exportName: 'getUserById',
+        exportKind: 'function',
+        description: 'Fetches user details by ID from database',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-3',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        repoConnectionId: 'demo-repo-backend',
+        filePath: 'src/services/authService.ts',
+        exportName: 'AuthService',
+        exportKind: 'class',
+        description: 'Handles JWT token generation, validation, and refresh operations',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-4',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        repoConnectionId: 'demo-repo-backend',
+        filePath: 'src/middleware/validate.ts',
+        exportName: 'validateRequest',
+        exportKind: 'function',
+        description: 'Express middleware for request validation using Zod schemas',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-5',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-backend',
+        repoConnectionId: 'demo-repo-backend',
+        filePath: 'src/config/database.ts',
+        exportName: 'connectDB',
+        exportKind: 'function',
+        description: 'Establishes connection to PostgreSQL database with retry logic',
+        lastSyncedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      },
+      // Frontend Web App modules
+      {
+        id: 'demo-code-6',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        repoConnectionId: 'demo-repo-frontend',
+        filePath: 'src/components/UserProfile.tsx',
+        exportName: 'UserProfile',
+        exportKind: 'function',
+        description: 'React component displaying user profile information with edit functionality',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-7',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        repoConnectionId: 'demo-repo-frontend',
+        filePath: 'src/hooks/useAuth.ts',
+        exportName: 'useAuth',
+        exportKind: 'function',
+        description: 'Custom React hook for authentication state and operations',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-8',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        repoConnectionId: 'demo-repo-frontend',
+        filePath: 'src/services/api.ts',
+        exportName: 'ApiClient',
+        exportKind: 'class',
+        description: 'HTTP client with automatic token refresh and error handling',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-9',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        repoConnectionId: 'demo-repo-frontend',
+        filePath: 'src/utils/formatters.ts',
+        exportName: 'formatDate',
+        exportKind: 'function',
+        description: 'Formats dates in a user-friendly localized format',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-code-10',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        repoConnectionId: 'demo-repo-frontend',
+        filePath: 'src/store/userSlice.ts',
+        exportName: 'userSlice',
+        exportKind: 'const',
+        description: 'Redux slice for managing user state across the application',
+        lastSyncedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+    ];
+
+    setRepoConnections(prev => {
+      const hasDemo = prev.some(r => r.id === 'demo-repo-backend');
+      return hasDemo ? prev : [...prev, ...demoRepoConnections];
+    });
+
+    setCodeModules(prev => {
+      const hasDemo = prev.some(m => m.id === 'demo-code-1');
+      return hasDemo ? prev : [...prev, ...demoCodeModules];
+    });
+
     setDemoSeeded(true);
   };
 
@@ -1130,6 +1300,210 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setWaitlistSubscribers([...waitlistSubscribers, newSubscriber]);
   };
 
+  const connectRepo = async (projectId: string, repoUrl: string, defaultBranch: string, token: string) => {
+    if (!currentUser) throw new Error('Must be logged in');
+    
+    // Parse GitHub URL to get owner and repo
+    const match = repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    if (!match) throw new Error('Invalid GitHub URL');
+    
+    const [, owner, repo] = match;
+    const cleanRepo = repo.replace(/\.git$/, '');
+    
+    // Validate repo access
+    try {
+      const response = await fetch(`https://api.github.com/repos/${owner}/${cleanRepo}`, {
+        headers: {
+          'Authorization': `token ${token}`,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      });
+      
+      if (!response.ok) {
+        throw new Error('Unable to access repository. Check your token and URL.');
+      }
+    } catch (error) {
+      throw new Error('Failed to connect to GitHub. Check your credentials.');
+    }
+    
+    const newConnection: RepoConnection = {
+      id: generateId(),
+      workspaceId: currentUser.workspaceId,
+      projectId,
+      provider: 'github',
+      repoUrl,
+      defaultBranch,
+      status: 'connected',
+      createdAt: now(),
+      updatedAt: now(),
+    };
+    
+    setRepoConnections([...repoConnections, newConnection]);
+  };
+
+  const parseCodeFile = (filePath: string, content: string): Omit<CodeModule, 'id' | 'workspaceId' | 'projectId' | 'repoConnectionId' | 'lastSyncedAt'>[] => {
+    const modules: Omit<CodeModule, 'id' | 'workspaceId' | 'projectId' | 'repoConnectionId' | 'lastSyncedAt'>[] = [];
+    
+    // Simple regex patterns for common exports
+    const patterns = [
+      // export function/const/class
+      /export\s+(async\s+)?(function|const|class)\s+([a-zA-Z0-9_]+)/g,
+      // export default
+      /export\s+default\s+(function|class)\s+([a-zA-Z0-9_]+)/g,
+      // named exports
+      /export\s*{\s*([^}]+)\s*}/g,
+    ];
+    
+    patterns.forEach(pattern => {
+      let match;
+      while ((match = pattern.exec(content)) !== null) {
+        if (match[3]) {
+          // Regular export function/const/class
+          const kind = match[2] === 'function' ? 'function' : match[2] === 'class' ? 'class' : 'const';
+          
+          // Try to find JSDoc comment
+          const beforeExport = content.substring(0, match.index);
+          const docMatch = beforeExport.match(/\/\*\*([^*]|\*[^/])*\*\/\s*$/);
+          let description = 'No description';
+          
+          if (docMatch) {
+            const docText = docMatch[0].replace(/\/\*\*|\*\/|\*/g, '').trim();
+            const lines = docText.split('\n').map(l => l.trim()).filter(l => l && !l.startsWith('@'));
+            description = lines[0] || 'No description';
+          }
+          
+          modules.push({
+            filePath,
+            exportName: match[3],
+            exportKind: kind as ExportKind,
+            description,
+          });
+        } else if (match[2] && pattern.toString().includes('default')) {
+          // Default export
+          const kind = match[1] === 'function' ? 'function' : 'class';
+          modules.push({
+            filePath,
+            exportName: 'default',
+            exportKind: kind as ExportKind,
+            description: 'Default export',
+          });
+        }
+      }
+    });
+    
+    return modules;
+  };
+
+  const generateCodeDocs = async (projectId: string) => {
+    if (!currentUser) throw new Error('Must be logged in');
+    
+    const connection = repoConnections.find(c => c.projectId === projectId && c.status === 'connected');
+    if (!connection) throw new Error('No connected repository');
+    
+    const match = connection.repoUrl.match(/github\.com\/([^\/]+)\/([^\/]+)/);
+    if (!match) throw new Error('Invalid repository URL');
+    
+    const [, owner, repo] = match;
+    const cleanRepo = repo.replace(/\.git$/, '');
+    
+    try {
+      // Fetch repository tree
+      const treeResponse = await fetch(
+        `https://api.github.com/repos/${owner}/${cleanRepo}/git/trees/${connection.defaultBranch}?recursive=1`,
+        {
+          headers: {
+            'Accept': 'application/vnd.github.v3+json'
+          }
+        }
+      );
+      
+      if (!treeResponse.ok) throw new Error('Failed to fetch repository tree');
+      
+      const treeData = await treeResponse.json();
+      const newModules: CodeModule[] = [];
+      
+      // Filter for source files
+      const sourceFiles = treeData.tree.filter((item: any) => 
+        item.type === 'blob' && 
+        (item.path.startsWith('src/') || item.path.startsWith('app/')) &&
+        (item.path.endsWith('.ts') || item.path.endsWith('.tsx') || 
+         item.path.endsWith('.js') || item.path.endsWith('.jsx'))
+      );
+      
+      // Fetch and parse first 20 files (to avoid rate limits)
+      const filesToProcess = sourceFiles.slice(0, 20);
+      
+      for (const file of filesToProcess) {
+        try {
+          const contentResponse = await fetch(
+            `https://api.github.com/repos/${owner}/${cleanRepo}/contents/${file.path}?ref=${connection.defaultBranch}`,
+            {
+              headers: {
+                'Accept': 'application/vnd.github.v3+json'
+              }
+            }
+          );
+          
+          if (contentResponse.ok) {
+            const contentData = await contentResponse.json();
+            const content = atob(contentData.content);
+            const parsedModules = parseCodeFile(file.path, content);
+            
+            parsedModules.forEach(mod => {
+              newModules.push({
+                id: generateId(),
+                workspaceId: currentUser.workspaceId,
+                projectId,
+                repoConnectionId: connection.id,
+                ...mod,
+                lastSyncedAt: now(),
+              });
+            });
+          }
+        } catch (error) {
+          console.error(`Failed to parse ${file.path}:`, error);
+        }
+      }
+      
+      // Remove old modules for this repo and add new ones
+      setCodeModules([
+        ...codeModules.filter(m => m.repoConnectionId !== connection.id),
+        ...newModules,
+      ]);
+      
+      // Update connection lastSyncedAt
+      setRepoConnections(
+        repoConnections.map(c => 
+          c.id === connection.id 
+            ? { ...c, lastSyncedAt: now(), updatedAt: now() } 
+            : c
+        )
+      );
+    } catch (error) {
+      throw new Error('Failed to generate code documentation');
+    }
+  };
+
+  const getRepoConnection = (projectId: string) => {
+    return repoConnections.find(c => c.projectId === projectId);
+  };
+
+  const searchGlobalWithCode = (query: string) => {
+    const lowerQuery = query.toLowerCase();
+    const results = searchGlobal(query);
+    
+    const matchedModules = codeModules.filter(m => 
+      m.exportName.toLowerCase().includes(lowerQuery) ||
+      m.filePath.toLowerCase().includes(lowerQuery) ||
+      m.description.toLowerCase().includes(lowerQuery)
+    );
+    
+    return {
+      ...results,
+      codeModules: matchedModules,
+    };
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -1169,6 +1543,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         getAtRiskStatus,
         getInsightsMetrics,
         submitWaitlist,
+        repoConnections,
+        codeModules,
+        connectRepo,
+        generateCodeDocs,
+        getRepoConnection,
+        searchGlobalWithCode,
       }}
     >
       {children}

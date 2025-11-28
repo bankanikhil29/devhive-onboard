@@ -118,3 +118,32 @@ export interface WaitlistSubscriber {
   role?: string;
   createdAt: string;
 }
+
+export type RepoStatus = 'connected' | 'error' | 'disconnected';
+
+export interface RepoConnection {
+  id: string;
+  workspaceId: string;
+  projectId: string;
+  provider: 'github';
+  repoUrl: string;
+  defaultBranch: string;
+  status: RepoStatus;
+  lastSyncedAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ExportKind = 'function' | 'class' | 'interface' | 'type' | 'const';
+
+export interface CodeModule {
+  id: string;
+  workspaceId: string;
+  projectId: string;
+  repoConnectionId: string;
+  filePath: string;
+  exportName: string;
+  exportKind: ExportKind;
+  description: string;
+  lastSyncedAt: string;
+}

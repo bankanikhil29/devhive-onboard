@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus, FileText, CheckSquare, ExternalLink } from 'lucide-react';
+import { Plus, FileText, CheckSquare, ExternalLink, Code2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { RepoConnectionPanel } from '@/components/RepoConnectionPanel';
+import { CodeReferenceTab } from '@/components/CodeReferenceTab';
 
 export default function ProjectDetail() {
   const { id } = useParams();
@@ -95,6 +97,10 @@ export default function ProjectDetail() {
           <TabsList>
             <TabsTrigger value="docs">Documentation</TabsTrigger>
             <TabsTrigger value="onboarding">Onboarding</TabsTrigger>
+            <TabsTrigger value="code">
+              <Code2 className="w-4 h-4 mr-2" />
+              Code Reference
+            </TabsTrigger>
           </TabsList>
           <TabsContent value="docs" className="space-y-4">
             <div className="flex justify-end">
@@ -206,6 +212,11 @@ export default function ProjectDetail() {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="code" className="space-y-6">
+            <RepoConnectionPanel projectId={project.id} />
+            <CodeReferenceTab projectId={project.id} />
           </TabsContent>
         </Tabs>
       </div>
