@@ -167,17 +167,17 @@ export default function Index() {
             </div>
 
             {/* Right Column - Hero Image */}
-            <div className="hidden lg:block relative">
-              <div className="relative">
+            <div className="hidden lg:block relative min-h-[500px] flex items-center">
+              <div className="relative w-full">
                 {/* Glow effect */}
                 <div className="absolute -inset-4 bg-marketing-teal/20 blur-3xl rounded-3xl" />
                 
                 {/* Hero Image */}
-                <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
                   <img 
                     src={heroImage} 
                     alt="Developer workspace with multiple monitors" 
-                    className="w-full h-auto"
+                    className="w-full h-full object-cover"
                   />
                   
                   {/* Navy tint overlay to match outer background */}
