@@ -1,9 +1,9 @@
-import { ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { ReactNode, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
-import { Home, FileText, CheckSquare, Settings, LogOut, Menu, X } from 'lucide-react';
-import { useState } from 'react';
+import { Home, FileText, CheckSquare, Settings, LogOut, Menu, X, Search } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -12,11 +12,21 @@ interface LayoutProps {
 export const Layout = ({ children }: LayoutProps) => {
   const { currentUser, logout } = useApp();
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   if (!currentUser) return <>{children}</>;
 
   const isActive = (path: string) => location.pathname === path;
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
 
   const navItems = [
     { path: '/dashboard', label: 'Dashboard', icon: Home },
@@ -65,6 +75,24 @@ export const Layout = ({ children }: LayoutProps) => {
         </div>
       </aside>
 
+      {/* Desktop Header with Search */}
+      <div className="hidden lg:flex fixed top-0 left-64 right-0 z-40 h-16 bg-background border-b border-border">
+        <div className="flex items-center justify-between w-full px-6">
+          <form onSubmit={handleSearch} className="flex-1 max-w-md">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search docs, checklists, assignments..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+          </form>
+        </div>
+      </div>
+
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-sidebar border-b border-sidebar-border">
         <div className="flex items-center justify-between p-4">
@@ -77,6 +105,20 @@ export const Layout = ({ children }: LayoutProps) => {
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
+        </div>
+        <div className="px-4 pb-3">
+          <form onSubmit={handleSearch}>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 bg-background"
+              />
+            </div>
+          </form>
         </div>
       </div>
 
@@ -122,7 +164,7 @@ export const Layout = ({ children }: LayoutProps) => {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 lg:pt-0 pt-16">
+      <main className="flex-1 lg:pt-16 pt-28">
         {children}
       </main>
     </div>
