@@ -143,7 +143,7 @@ export default function Index() {
                   size="lg"
                   onClick={handleTryDemo}
                   variant="outline"
-                  className="min-w-[180px] bg-transparent border-2 border-marketing-text-muted/30 text-marketing-text hover:bg-marketing-text-muted/10 hover:border-marketing-text-muted/50 font-semibold text-base px-8 py-6 rounded-lg transition-all"
+                  className="min-w-[180px] bg-transparent border-2 border-marketing-text-muted/30 text-marketing-text hover:bg-marketing-text hover:text-marketing-navy hover:border-marketing-text font-semibold text-base px-8 py-6 rounded-lg transition-all"
                 >
                   Try Demo
                 </Button>
