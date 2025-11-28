@@ -180,8 +180,11 @@ export default function Index() {
                     className="w-full h-auto"
                   />
                   
-                  {/* Floating Card Overlay */}
-                  <div className="absolute bottom-8 left-8 bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 rounded-xl p-4 shadow-xl">
+                  {/* Navy tint overlay to match outer background */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-marketing-navy/80 via-marketing-navy/60 to-transparent mix-blend-multiply" />
+                  
+                  {/* Floating Card Overlay - Bottom Right with horizontal float animation */}
+                  <div className="absolute bottom-8 right-8 bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 rounded-xl p-4 shadow-xl animate-float-x">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-marketing-teal/20 flex items-center justify-center">
                         <Github className="w-5 h-5 text-marketing-teal" />

@@ -114,3 +114,18 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  @keyframes float-horizontal {
+    0%, 100% { 
+      transform: translateX(0); 
+    }
+    50% { 
+      transform: translateX(10px); 
+    }
+  }
+
+  .animate-float-x {
+    animation: float-horizontal 5s ease-in-out infinite;
+  }
+}
