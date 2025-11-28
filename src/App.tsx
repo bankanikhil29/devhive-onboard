@@ -16,6 +16,7 @@ import Insights from "./pages/Insights";
 import Search from "./pages/Search";
 import Settings from "./pages/Settings";
 import TemplateNew from "./pages/TemplateNew";
+import TemplateDetail from "./pages/TemplateDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/search" element={<Search />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/templates/new" element={<TemplateNew />} />
+            <Route path="/templates/:id" element={<TemplateDetail />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
