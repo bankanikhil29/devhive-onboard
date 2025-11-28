@@ -4,13 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
 import { Home, FileText, CheckSquare, Settings, LogOut, Menu, X, Search, BarChart3 } from 'lucide-react';
+import { DemoBanner } from '@/components/DemoBanner';
 
 interface LayoutProps {
   children: ReactNode;
 }
 
 export const Layout = ({ children }: LayoutProps) => {
-  const { currentUser, logout } = useApp();
+  const { currentUser, logout, isDemoUser } = useApp();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -40,6 +41,7 @@ export const Layout = ({ children }: LayoutProps) => {
 
   return (
     <div className="flex min-h-screen bg-background">
+      <DemoBanner />
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex w-64 flex-col bg-sidebar border-r border-sidebar-border">
         <div className="p-6 border-b border-sidebar-border">
