@@ -7,7 +7,7 @@ import { useApp } from '@/contexts/AppContext';
 import { CheckCircle2, FileText, Users, BarChart3, MessageSquare, Clock, Search, TrendingUp, GitBranch, Github, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
-import heroImage from '@/assets/hero-developer-desk.png';
+import heroImage from '@/assets/hero-developer-desk.jpg';
 
 export default function Index() {
   const navigate = useNavigate();
