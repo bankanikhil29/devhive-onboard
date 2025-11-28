@@ -111,3 +111,10 @@ export interface Comment {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface WaitlistSubscriber {
+  id: string;
+  email: string;
+  role?: string;
+  createdAt: string;
+}
