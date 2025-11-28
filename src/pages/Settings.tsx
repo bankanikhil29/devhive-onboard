@@ -13,7 +13,7 @@ import { Plus, Users } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 export default function Settings() {
-  const { currentUser, users, createUser, projects, createAssignment, templates, isDemoUser } = useApp();
+  const { currentUser, users, createUser, projects, createAssignment, templates, assignments, isDemoUser } = useApp();
   const { toast } = useToast();
   const [userDialogOpen, setUserDialogOpen] = useState(false);
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
@@ -21,6 +21,7 @@ export default function Settings() {
   if (!currentUser || currentUser.role !== 'admin') return null;
 
   const workspaceUsers = users.filter(u => u.workspaceId === currentUser.workspaceId);
+  const workspaceAssignments = assignments.filter(a => a.workspaceId === currentUser.workspaceId);
 
   const handleCreateUser = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -233,11 +234,58 @@ export default function Settings() {
               </Dialog>
             </div>
 
-            <Card>
-              <CardHeader>
-                <CardDescription>Assignment functionality is available in Settings → Assignments</CardDescription>
-              </CardHeader>
-            </Card>
+            {workspaceAssignments.length === 0 ? (
+              <Card>
+                <CardContent className="flex flex-col items-center justify-center py-12">
+                  <Users className="w-12 h-12 text-muted-foreground mb-4" />
+                  <p className="text-muted-foreground">No assignments yet</p>
+                  <p className="text-sm text-muted-foreground mt-2">Click "Assign Onboarding" to get started</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-3">
+                {workspaceAssignments.map(assignment => {
+                  const user = users.find(u => u.id === assignment.assignedToUserId);
+                  const template = templates.find(t => t.id === assignment.checklistTemplateId);
+                  const project = projects.find(p => p.id === assignment.projectId);
+                  const assignedBy = users.find(u => u.id === assignment.assignedByUserId);
+                  
+                  return (
+                    <Card key={assignment.id}>
+                      <CardHeader>
+                        <div className="flex items-start justify-between">
+                          <div className="space-y-1">
+                            <CardTitle className="text-base">{template?.name || 'Unknown Template'}</CardTitle>
+                            <CardDescription>
+                              <div className="space-y-1">
+                                <div>Assigned to: <span className="font-medium">{user?.name}</span></div>
+                                <div>Project: <span className="font-medium">{project?.name}</span></div>
+                                <div>Assigned by: <span className="font-medium">{assignedBy?.name}</span></div>
+                                {assignment.dueAt && (
+                                  <div>Due: <span className="font-medium">{new Date(assignment.dueAt).toLocaleDateString()}</span></div>
+                                )}
+                                <div className="text-xs text-muted-foreground mt-1">
+                                  Created: {new Date(assignment.createdAt).toLocaleDateString()}
+                                </div>
+                              </div>
+                            </CardDescription>
+                          </div>
+                          <Badge 
+                            variant={
+                              assignment.status === 'completed' ? 'default' : 
+                              assignment.status === 'in_progress' ? 'secondary' : 
+                              'outline'
+                            }
+                          >
+                            {assignment.status.replace('_', ' ')}
+                          </Badge>
+                        </div>
+                      </CardHeader>
+                    </Card>
+                  );
+                })}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
