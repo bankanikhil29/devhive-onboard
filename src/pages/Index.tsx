@@ -10,14 +10,14 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function Index() {
   const navigate = useNavigate();
-  const { loginAsGuest, submitWaitlist } = useApp();
+  const { loginAsDemo, submitWaitlist } = useApp();
   const { toast } = useToast();
   const [waitlistEmail, setWaitlistEmail] = useState('');
   const [waitlistRole, setWaitlistRole] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleTryDemo = async () => {
-    await loginAsGuest();
+    await loginAsDemo();
     navigate('/dashboard');
   };
 
