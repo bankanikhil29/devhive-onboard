@@ -15,11 +15,11 @@ export const DemoBanner = () => {
   };
 
   return (
-    <div className="bg-amber-500/10 border-b border-amber-500/20 px-4 py-2">
+    <div className="bg-primary/5 border-b border-primary/20 px-4 py-2">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 flex-1">
-          <AlertCircle className="w-4 h-4 text-amber-600 flex-shrink-0" />
-          <p className="text-sm text-amber-900 dark:text-amber-100">
+          <AlertCircle className="w-4 h-4 text-primary flex-shrink-0" />
+          <p className="text-sm text-primary">
             You are exploring the DevHive demo workspace. Changes are shared by all visitors and reset periodically.
           </p>
         </div>
@@ -27,7 +27,7 @@ export const DemoBanner = () => {
           variant="ghost"
           size="sm"
           onClick={handleExitDemo}
-          className="text-amber-900 hover:text-amber-950 hover:bg-amber-500/20 flex-shrink-0"
+          className="text-primary hover:text-primary/80 hover:bg-primary/10 flex-shrink-0"
         >
           <X className="w-4 h-4 mr-1" />
           Exit Demo
