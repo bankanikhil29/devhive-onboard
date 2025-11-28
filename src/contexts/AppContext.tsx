@@ -139,7 +139,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const demoAdmin: User = {
       id: 'demo-admin-id',
       workspaceId: DEMO_WORKSPACE_ID,
-      name: 'Demo Admin',
+      name: 'Rajesh Kumar',
       email: DEMO_ADMIN_EMAIL,
       role: 'admin',
       createdAt: now(),
@@ -150,7 +150,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const demoDev: User = {
       id: 'demo-dev-id',
       workspaceId: DEMO_WORKSPACE_ID,
-      name: 'Alex Developer',
+      name: 'Arjun Patel',
       email: DEMO_DEV_EMAIL,
       role: 'member',
       createdAt: now(),
@@ -161,8 +161,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const demoDevSarah: User = {
       id: 'demo-dev-sarah',
       workspaceId: DEMO_WORKSPACE_ID,
-      name: 'Sarah Chen',
-      email: 'sarah.chen@demo.devhive.com',
+      name: 'Ananya Gupta',
+      email: 'ananya.gupta@demo.devhive.com',
       role: 'member',
       createdAt: now(),
       updatedAt: now(),
@@ -172,8 +172,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const demoDevMike: User = {
       id: 'demo-dev-mike',
       workspaceId: DEMO_WORKSPACE_ID,
-      name: 'Mike Rodriguez',
-      email: 'mike.r@demo.devhive.com',
+      name: 'Vikram Singh',
+      email: 'vikram.singh@demo.devhive.com',
       role: 'member',
       createdAt: now(),
       updatedAt: now(),
@@ -725,7 +725,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         entityType: 'assignment',
         entityId: 'demo-assignment-overdue',
         authorUserId: 'demo-admin-id',
-        content: 'Hey Alex, noticed this is past due. Any blockers I can help with?',
+        content: 'Hey Arjun, noticed this is past due. Any blockers I can help with?',
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
       },
