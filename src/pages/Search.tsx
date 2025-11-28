@@ -7,21 +7,21 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { EmptyState } from '@/components/EmptyState';
 import { StatusBadge } from '@/components/StatusBadge';
-import { Search as SearchIcon, FileText, CheckSquare, ClipboardList } from 'lucide-react';
+import { Search as SearchIcon, FileText, CheckSquare, ClipboardList, Code2 } from 'lucide-react';
 
 export default function Search() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q') || '';
-  const { searchGlobal, projects, users, templates } = useApp();
-  const [results, setResults] = useState({ documents: [], templates: [], assignments: [] });
+  const { searchGlobalWithCode, projects, users, templates } = useApp();
+  const [results, setResults] = useState({ documents: [], templates: [], assignments: [], codeModules: [] });
 
   useEffect(() => {
     if (query) {
-      setResults(searchGlobal(query));
+      setResults(searchGlobalWithCode(query));
     }
   }, [query]);
 
-  const hasResults = results.documents.length > 0 || results.templates.length > 0 || results.assignments.length > 0;
+  const hasResults = results.documents.length > 0 || results.templates.length > 0 || results.assignments.length > 0 || results.codeModules.length > 0;
 
   return (
     <Layout>
@@ -56,6 +56,9 @@ export default function Search() {
               </TabsTrigger>
               <TabsTrigger value="assignments">
                 Assignments <Badge variant="secondary" className="ml-2">{results.assignments.length}</Badge>
+              </TabsTrigger>
+              <TabsTrigger value="code">
+                Code <Badge variant="secondary" className="ml-2">{results.codeModules.length}</Badge>
               </TabsTrigger>
             </TabsList>
 
@@ -160,6 +163,47 @@ export default function Search() {
                             <StatusBadge status={assignment.status} />
                           </div>
                           <div className="text-xs text-muted-foreground mt-2">
+                            Project: {project?.name || 'Unknown'}
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    </Link>
+                  );
+                })
+              )}
+            </TabsContent>
+
+            <TabsContent value="code" className="space-y-3">
+              {results.codeModules.length === 0 ? (
+                <Card>
+                  <CardContent className="py-8 text-center text-muted-foreground">
+                    No code references found
+                  </CardContent>
+                </Card>
+              ) : (
+                results.codeModules.map(module => {
+                  const project = projects.find(p => p.id === module.projectId);
+                  return (
+                    <Link key={module.id} to={`/projects/${module.projectId}?tab=code`}>
+                      <Card className="hover:border-primary transition-colors cursor-pointer">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <Code2 className="w-4 h-4 text-muted-foreground" />
+                                <Badge variant="outline" className="text-xs">CODE</Badge>
+                                <Badge variant="secondary" className="text-xs">{module.exportKind}</Badge>
+                              </div>
+                              <CardTitle className="mt-2">{module.exportName}</CardTitle>
+                              <CardDescription className="mt-1">
+                                {module.description}
+                              </CardDescription>
+                            </div>
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-2 font-mono">
+                            {module.filePath}
+                          </div>
+                          <div className="text-xs text-muted-foreground">
                             Project: {project?.name || 'Unknown'}
                           </div>
                         </CardHeader>
