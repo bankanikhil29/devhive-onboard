@@ -51,6 +51,16 @@ All colors MUST be HSL.
     --success-foreground: 0 0% 98%;
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
+
+    /* Marketing Landing - Dark Theme */
+    --marketing-bg: 222 47% 11%;
+    --marketing-bg-gradient-start: 222 47% 11%;
+    --marketing-bg-gradient-end: 221 39% 8%;
+    --marketing-teal: 174 72% 56%;
+    --marketing-teal-dark: 174 72% 46%;
+    --marketing-card: 222 47% 14%;
+    --marketing-text: 210 40% 98%;
+    --marketing-text-muted: 215 20% 65%;
   }
 
   .dark {

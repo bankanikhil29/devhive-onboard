@@ -10,6 +10,7 @@ import type {
   OnboardingAssignmentItemStatus,
   Comment,
   CommentEntityType,
+  WaitlistSubscriber,
 } from '@/types';
 import { DEMO_WORKSPACE_ID, DEMO_ADMIN_EMAIL, DEMO_DEV_EMAIL } from '@/types';
 
@@ -24,6 +25,7 @@ interface AppContextType {
   assignmentStatuses: OnboardingAssignmentItemStatus[];
   comments: Comment[];
   users: User[];
+  waitlistSubscribers: WaitlistSubscriber[];
   login: (email: string, password: string) => Promise<void>;
   loginAsGuest: () => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'admin' | 'member') => Promise<void>;
@@ -52,6 +54,7 @@ interface AppContextType {
     statusCounts: { not_started: number; in_progress: number; completed: number };
     assignmentsOverTime: { date: string; count: number }[];
   };
+  submitWaitlist: (email: string, role?: string) => Promise<void>;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -70,6 +73,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [assignmentStatuses, setAssignmentStatuses] = useState<OnboardingAssignmentItemStatus[]>([]);
   const [comments, setComments] = useState<Comment[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [waitlistSubscribers, setWaitlistSubscribers] = useState<WaitlistSubscriber[]>([]);
   const [demoSeeded, setDemoSeeded] = useState(false);
 
   const login = async (email: string, password: string) => {
@@ -812,6 +816,28 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     return { avgCompletionDays, statusCounts, assignmentsOverTime };
   };
 
+  const submitWaitlist = async (email: string, role?: string): Promise<void> => {
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      throw new Error('Invalid email format');
+    }
+
+    // Check if email already exists
+    if (waitlistSubscribers.some((sub) => sub.email === email)) {
+      throw new Error('Email already registered');
+    }
+
+    const newSubscriber: WaitlistSubscriber = {
+      id: `waitlist-${Date.now()}`,
+      email: email.trim().toLowerCase(),
+      role: role || undefined,
+      createdAt: new Date().toISOString(),
+    };
+
+    setWaitlistSubscribers([...waitlistSubscribers, newSubscriber]);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -825,6 +851,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         assignmentStatuses,
         comments,
         users,
+        waitlistSubscribers,
         login,
         loginAsGuest,
         signup,
@@ -849,6 +876,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         getAssignmentProgress,
         getAtRiskStatus,
         getInsightsMetrics,
+        submitWaitlist,
       }}
     >
       {children}

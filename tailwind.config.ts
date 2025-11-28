@@ -65,6 +65,19 @@ export default {
           DEFAULT: "hsl(var(--warning))",
           foreground: "hsl(var(--warning-foreground))",
         },
+        marketing: {
+          bg: "hsl(var(--marketing-bg))",
+          "bg-gradient-start": "hsl(var(--marketing-bg-gradient-start))",
+          "bg-gradient-end": "hsl(var(--marketing-bg-gradient-end))",
+          teal: "hsl(var(--marketing-teal))",
+          "teal-dark": "hsl(var(--marketing-teal-dark))",
+          card: "hsl(var(--marketing-card))",
+          text: "hsl(var(--marketing-text))",
+          "text-muted": "hsl(var(--marketing-text-muted))",
+        },
+      },
+      backgroundImage: {
+        "marketing-gradient": "linear-gradient(180deg, hsl(var(--marketing-bg-gradient-start)), hsl(var(--marketing-bg-gradient-end)))",
       },
       borderRadius: {
         lg: "var(--radius)",
