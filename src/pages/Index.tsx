@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '@/contexts/AppContext';
-import { CheckCircle2, FileText, Users, BarChart3, MessageSquare, Clock, Search, TrendingUp, GitBranch, ArrowRight } from 'lucide-react';
+import { CheckCircle2, FileText, Users, BarChart3, MessageSquare, Clock, Search, TrendingUp, GitBranch, Github, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import heroImage from '@/assets/hero-developer-desk.png';
@@ -184,7 +184,7 @@ export default function Index() {
                   <div className="absolute bottom-8 left-8 bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 rounded-xl p-4 shadow-xl">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-lg bg-marketing-teal/20 flex items-center justify-center">
-                        <GitBranch className="w-5 h-5 text-marketing-teal" />
+                        <Github className="w-5 h-5 text-marketing-teal" />
                       </div>
                       <div>
                         <div className="text-sm font-semibold text-marketing-text">Auto-synced docs</div>
