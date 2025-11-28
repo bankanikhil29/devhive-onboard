@@ -35,6 +35,8 @@ interface AppContextType {
   createAssignment: (data: Omit<OnboardingAssignment, 'id' | 'createdAt' | 'updatedAt' | 'status' | 'assignedByUserId'>) => void;
   updateAssignmentStatus: (assignmentId: string, itemId: string, status: 'not_started' | 'in_progress' | 'completed') => void;
   createUser: (data: Omit<User, 'id' | 'createdAt' | 'updatedAt' | 'isActive'>) => void;
+  searchGlobal: (query: string) => { documents: Document[]; templates: OnboardingChecklistTemplate[]; assignments: OnboardingAssignment[] };
+  getAssignmentProgress: (assignmentId: string) => number;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -246,6 +248,37 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setUsers(prev => [...prev, user]);
   };
 
+  const searchGlobal = (query: string) => {
+    if (!currentUser) return { documents: [], templates: [], assignments: [] };
+    
+    const q = query.toLowerCase().trim();
+    if (!q) return { documents: [], templates: [], assignments: [] };
+
+    const filteredDocuments = documents.filter(d =>
+      d.workspaceId === currentUser.workspaceId &&
+      (d.title.toLowerCase().includes(q) || d.summary.toLowerCase().includes(q) || d.content.toLowerCase().includes(q))
+    );
+
+    const filteredTemplates = templates.filter(t =>
+      t.workspaceId === currentUser.workspaceId &&
+      (t.name.toLowerCase().includes(q) || t.description.toLowerCase().includes(q))
+    );
+
+    const filteredAssignments = assignments.filter(a =>
+      a.workspaceId === currentUser.workspaceId &&
+      (currentUser.role === 'admin' || a.assignedToUserId === currentUser.id)
+    );
+
+    return { documents: filteredDocuments, templates: filteredTemplates, assignments: filteredAssignments };
+  };
+
+  const getAssignmentProgress = (assignmentId: string) => {
+    const statuses = assignmentStatuses.filter(s => s.onboardingAssignmentId === assignmentId);
+    if (statuses.length === 0) return 0;
+    const completed = statuses.filter(s => s.status === 'completed').length;
+    return Math.round((completed / statuses.length) * 100);
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -273,6 +306,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         createAssignment,
         updateAssignmentStatus,
         createUser,
+        searchGlobal,
+        getAssignmentProgress,
       }}
     >
       {children}
