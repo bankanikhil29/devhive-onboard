@@ -119,9 +119,8 @@ export default function Index() {
                 </Button>
                 <Button
                   size="lg"
-                  variant="outline"
                   onClick={() => navigate('/auth')}
-                  className="min-w-[200px] border-marketing-teal text-marketing-teal hover:bg-marketing-teal/10"
+                  className="min-w-[200px] bg-transparent border-2 border-marketing-teal text-marketing-teal hover:bg-marketing-teal hover:text-white font-semibold transition-all"
                 >
                   Sign Up
                 </Button>
