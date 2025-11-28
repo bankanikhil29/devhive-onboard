@@ -409,7 +409,7 @@ export default function Index() {
                     type="submit"
                     size="lg"
                     disabled={isSubmitting}
-                    className="w-full bg-marketing-teal hover:bg-marketing-teal-dark text-white font-semibold"
+                    className="w-full bg-marketing-blue hover:bg-marketing-blue/90 text-white font-semibold shadow-lg shadow-marketing-blue/25"
                   >
                     {isSubmitting ? 'Joining...' : 'Join Waitlist'}
                   </Button>
