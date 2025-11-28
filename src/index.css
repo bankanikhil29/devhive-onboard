@@ -52,15 +52,18 @@ All colors MUST be HSL.
     --warning: 38 92% 50%;
     --warning-foreground: 0 0% 98%;
 
-    /* Marketing Landing - Dark Theme */
-    --marketing-bg: 222 47% 11%;
-    --marketing-bg-gradient-start: 222 47% 11%;
-    --marketing-bg-gradient-end: 221 39% 8%;
+    /* Marketing Landing - Navy Blue Theme matching code-sync-onboard */
+    --marketing-navy: 220 40% 13%;
+    --marketing-navy-light: 220 35% 17%;
+    --marketing-bg-gradient-start: 220 40% 13%;
+    --marketing-bg-gradient-end: 220 45% 9%;
     --marketing-teal: 174 72% 56%;
-    --marketing-teal-dark: 174 72% 46%;
-    --marketing-card: 222 47% 14%;
+    --marketing-teal-dark: 174 62% 46%;
+    --marketing-blue: 217 91% 60%;
+    --marketing-card: 220 35% 17%;
     --marketing-text: 210 40% 98%;
     --marketing-text-muted: 215 20% 65%;
+    --marketing-pill-bg: 220 30% 20%;
   }
 
   .dark {
