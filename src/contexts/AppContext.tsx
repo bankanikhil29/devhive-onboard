@@ -27,7 +27,7 @@ interface AppContextType {
   users: User[];
   waitlistSubscribers: WaitlistSubscriber[];
   login: (email: string, password: string) => Promise<void>;
-  loginAsGuest: () => Promise<void>;
+  loginAsDemo: () => Promise<void>;
   signup: (name: string, email: string, password: string, role: 'admin' | 'member') => Promise<void>;
   logout: () => void;
   isDemoUser: () => boolean;
@@ -540,7 +540,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setDemoSeeded(true);
   };
 
-  const loginAsGuest = async () => {
+  const loginAsDemo = async () => {
     seedDemoData();
     const demoUser = users.find(u => u.email === DEMO_ADMIN_EMAIL) || {
       id: 'demo-admin-id',
@@ -853,7 +853,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         users,
         waitlistSubscribers,
         login,
-        loginAsGuest,
+        loginAsDemo,
         signup,
         logout,
         isDemoUser,

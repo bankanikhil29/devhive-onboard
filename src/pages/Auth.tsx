@@ -10,7 +10,7 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
   const navigate = useNavigate();
-  const { login, loginAsGuest, signup, currentUser } = useApp();
+  const { login, loginAsDemo, signup, currentUser } = useApp();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -41,10 +41,10 @@ export default function Auth() {
     }
   };
 
-  const handleGuestLogin = async () => {
+  const handleDemoLogin = async () => {
     setIsLoading(true);
     try {
-      await loginAsGuest();
+      await loginAsDemo();
       navigate('/dashboard');
     } catch (error) {
       toast({ title: 'Error', description: 'Failed to enter demo mode', variant: 'destructive' });
@@ -107,12 +107,12 @@ export default function Auth() {
         <CardContent>
           <div className="mb-4">
             <Button 
-              onClick={handleGuestLogin} 
+              onClick={handleDemoLogin} 
               disabled={isLoading}
               variant="outline"
               className="w-full"
             >
-              Continue as Guest (Demo)
+              Continue as Demo
             </Button>
             <div className="relative my-4">
               <div className="absolute inset-0 flex items-center">
