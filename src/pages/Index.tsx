@@ -111,12 +111,12 @@ export default function Index() {
 
               {/* Main Heading */}
               <div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-marketing-text leading-tight">
-                  Cut Developer Onboarding Time by{' '}
-                  <span className="block mt-2 text-5xl sm:text-6xl lg:text-7xl bg-gradient-to-r from-marketing-blue via-marketing-teal to-marketing-teal bg-clip-text text-transparent">
-                    50%
-                  </span>
-                </h1>
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-marketing-text leading-tight">
+                Cut Developer Onboarding Time by{' '}
+                <span className="text-5xl sm:text-6xl lg:text-7xl bg-gradient-to-r from-marketing-blue via-marketing-teal to-marketing-teal bg-clip-text text-transparent">
+                  50%
+                </span>
+              </h1>
               </div>
 
               {/* Sub-copy */}
