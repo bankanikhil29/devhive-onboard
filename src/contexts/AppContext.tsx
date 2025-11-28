@@ -158,6 +158,39 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       isActive: true,
     };
 
+    const demoDevSarah: User = {
+      id: 'demo-dev-sarah',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Sarah Chen',
+      email: 'sarah.chen@demo.devhive.com',
+      role: 'member',
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+
+    const demoDevMike: User = {
+      id: 'demo-dev-mike',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Mike Rodriguez',
+      email: 'mike.r@demo.devhive.com',
+      role: 'member',
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+
+    const demoTechLead: User = {
+      id: 'demo-tech-lead',
+      workspaceId: DEMO_WORKSPACE_ID,
+      name: 'Priya Sharma',
+      email: 'priya.sharma@demo.devhive.com',
+      role: 'admin',
+      createdAt: now(),
+      updatedAt: now(),
+      isActive: true,
+    };
+
     // Create demo projects
     const backendProject: Project = {
       id: 'demo-project-backend',
@@ -270,6 +303,45 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         createdAt: now(),
         updatedAt: now(),
       },
+      {
+        id: 'demo-doc-frontend-3',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        title: 'Testing Strategy',
+        summary: 'Unit tests, integration tests, and E2E testing approach',
+        content: '# Testing Strategy\n\n## Testing Pyramid\n- **Unit Tests**: Jest + React Testing Library\n- **Integration Tests**: Test component interactions\n- **E2E Tests**: Playwright for critical user flows\n\n## Best Practices\n- Write tests for all new features\n- Minimum 80% code coverage\n- Mock external API calls',
+        createdByUserId: 'demo-tech-lead',
+        updatedByUserId: 'demo-tech-lead',
+        isPinned: true,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-frontend-4',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        title: 'Routing & Navigation',
+        summary: 'How routes are structured and protected',
+        content: '# Routing & Navigation\n\n## Route Structure\n- `/` - Home page\n- `/dashboard` - User dashboard (protected)\n- `/profile` - User profile (protected)\n\n## Protected Routes\nUse `<ProtectedRoute>` wrapper for authenticated pages.\n\n## Navigation\nUse React Router Link component for internal navigation.',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-frontend-5',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-frontend',
+        title: 'Performance Optimization',
+        summary: 'Code splitting, lazy loading, and performance tips',
+        content: '# Performance Optimization\n\n## Key Techniques\n- Code splitting with React.lazy()\n- Image optimization with Next/Image\n- Memoization with useMemo and useCallback\n- Virtual scrolling for large lists\n\n## Monitoring\n- Lighthouse CI in pipeline\n- Core Web Vitals tracking',
+        createdByUserId: 'demo-tech-lead',
+        updatedByUserId: 'demo-tech-lead',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
     ];
 
     // Create demo documents for data project
@@ -283,6 +355,45 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         content: '# Pipeline Architecture\n\n## Data Flow\n1. Extract: Pull data from source systems\n2. Transform: Clean and enrich data\n3. Load: Store in data warehouse\n\n## Technologies\n- Apache Airflow for orchestration\n- Python for transformations\n- Snowflake for storage',
         createdByUserId: 'demo-admin-id',
         updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-data-2',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-data',
+        title: 'Data Quality Standards',
+        summary: 'Validation rules and data quality checks',
+        content: '# Data Quality Standards\n\n## Validation Rules\n- Schema validation on ingestion\n- Null checks for required fields\n- Range validation for numeric fields\n- Format validation for dates\n\n## Quality Metrics\n- Completeness: % of non-null values\n- Consistency: Cross-table validations\n- Timeliness: Data freshness SLAs',
+        createdByUserId: 'demo-tech-lead',
+        updatedByUserId: 'demo-tech-lead',
+        isPinned: true,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-data-3',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-data',
+        title: 'Airflow DAG Development',
+        summary: 'Best practices for creating and maintaining DAGs',
+        content: '# Airflow DAG Development\n\n## DAG Structure\n- Use dynamic task generation when possible\n- Set proper retry policies\n- Configure SLAs for critical tasks\n\n## Testing DAGs\n- Unit test task logic\n- Validate DAG integrity\n- Test with sample data first',
+        createdByUserId: 'demo-admin-id',
+        updatedByUserId: 'demo-admin-id',
+        isPinned: false,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-doc-data-4',
+        workspaceId: DEMO_WORKSPACE_ID,
+        projectId: 'demo-project-data',
+        title: 'Monitoring & Alerting',
+        summary: 'How to monitor pipelines and respond to failures',
+        content: '# Monitoring & Alerting\n\n## Key Metrics\n- Pipeline success rate\n- Data volume processed\n- Processing duration\n- Error rate by pipeline\n\n## Alert Channels\n- PagerDuty for critical failures\n- Slack for warnings\n- Email summaries daily',
+        createdByUserId: 'demo-tech-lead',
+        updatedByUserId: 'demo-tech-lead',
         isPinned: false,
         createdAt: now(),
         updatedAt: now(),
@@ -309,6 +420,18 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       name: 'Frontend Developer Onboarding',
       description: 'Learn our frontend stack and conventions',
       createdByUserId: 'demo-admin-id',
+      isActive: true,
+      createdAt: now(),
+      updatedAt: now(),
+    };
+
+    const dataTemplate: OnboardingChecklistTemplate = {
+      id: 'demo-template-data',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-data',
+      name: 'Data Engineer Onboarding',
+      description: 'Get familiar with our data infrastructure',
+      createdByUserId: 'demo-tech-lead',
       isActive: true,
       createdAt: now(),
       updatedAt: now(),
@@ -386,6 +509,65 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         createdAt: now(),
         updatedAt: now(),
       },
+      {
+        id: 'demo-item-frontend-3',
+        checklistTemplateId: 'demo-template-frontend',
+        title: 'Set up Testing Environment',
+        description: 'Configure Jest and write your first test',
+        orderIndex: 3,
+        estimatedMinutes: 60,
+        linkedDocumentId: 'demo-doc-frontend-3',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-frontend-4',
+        checklistTemplateId: 'demo-template-frontend',
+        title: 'Build a Feature Component',
+        description: 'Create a new component following our patterns',
+        orderIndex: 4,
+        estimatedMinutes: 90,
+        linkedDocumentId: null,
+        createdAt: now(),
+        updatedAt: now(),
+      },
+    ];
+
+    // Create template items for data pipeline
+    const dataTemplateItems: OnboardingChecklistItemTemplate[] = [
+      {
+        id: 'demo-item-data-1',
+        checklistTemplateId: 'demo-template-data',
+        title: 'Understand Pipeline Architecture',
+        description: 'Learn how our ETL workflows are structured',
+        orderIndex: 1,
+        estimatedMinutes: 40,
+        linkedDocumentId: 'demo-doc-data-1',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-data-2',
+        checklistTemplateId: 'demo-template-data',
+        title: 'Review Data Quality Standards',
+        description: 'Learn validation rules and quality metrics',
+        orderIndex: 2,
+        estimatedMinutes: 30,
+        linkedDocumentId: 'demo-doc-data-2',
+        createdAt: now(),
+        updatedAt: now(),
+      },
+      {
+        id: 'demo-item-data-3',
+        checklistTemplateId: 'demo-template-data',
+        title: 'Create Your First DAG',
+        description: 'Build a simple Airflow DAG with unit tests',
+        orderIndex: 3,
+        estimatedMinutes: 120,
+        linkedDocumentId: 'demo-doc-data-3',
+        createdAt: now(),
+        updatedAt: now(),
+      },
     ];
 
     // Create demo assignments
@@ -434,6 +616,36 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       updatedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
     };
 
+    const sarahDataAssignment: OnboardingAssignment = {
+      id: 'demo-assignment-sarah-data',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-data',
+      checklistTemplateId: 'demo-template-data',
+      assignedToUserId: 'demo-dev-sarah',
+      assignedByUserId: 'demo-tech-lead',
+      status: 'in_progress',
+      dueAt: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+      startedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+      completedAt: undefined,
+      createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: now(),
+    };
+
+    const mikeFrontendAssignment: OnboardingAssignment = {
+      id: 'demo-assignment-mike-frontend',
+      workspaceId: DEMO_WORKSPACE_ID,
+      projectId: 'demo-project-frontend',
+      checklistTemplateId: 'demo-template-frontend',
+      assignedToUserId: 'demo-dev-mike',
+      assignedByUserId: 'demo-admin-id',
+      status: 'not_started',
+      dueAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      startedAt: undefined,
+      completedAt: undefined,
+      createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+      updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    };
+
     // Create assignment statuses
     const backendStatuses: OnboardingAssignmentItemStatus[] = backendTemplateItems.map((item, idx) => ({
       id: `demo-status-backend-${idx}`,
@@ -448,6 +660,26 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const frontendStatuses: OnboardingAssignmentItemStatus[] = frontendTemplateItems.map((item, idx) => ({
       id: `demo-status-frontend-${idx}`,
       onboardingAssignmentId: 'demo-assignment-overdue',
+      checklistItemTemplateId: item.id,
+      status: 'not_started',
+      completedAt: undefined,
+      createdAt: now(),
+      updatedAt: now(),
+    }));
+
+    const sarahDataStatuses: OnboardingAssignmentItemStatus[] = dataTemplateItems.map((item, idx) => ({
+      id: `demo-status-sarah-data-${idx}`,
+      onboardingAssignmentId: 'demo-assignment-sarah-data',
+      checklistItemTemplateId: item.id,
+      status: idx === 0 ? 'completed' : 'in_progress' as 'not_started' | 'in_progress' | 'completed',
+      completedAt: idx === 0 ? new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() : undefined,
+      createdAt: now(),
+      updatedAt: now(),
+    }));
+
+    const mikeFrontendStatuses: OnboardingAssignmentItemStatus[] = frontendTemplateItems.map((item) => ({
+      id: `demo-status-mike-${item.id}`,
+      onboardingAssignmentId: 'demo-assignment-mike-frontend',
       checklistItemTemplateId: item.id,
       status: 'not_started',
       completedAt: undefined,
@@ -497,6 +729,66 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
         updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
       },
+      {
+        id: 'demo-comment-5',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-frontend-3',
+        authorUserId: 'demo-dev-sarah',
+        content: 'Should we be using Vitest instead of Jest for new projects?',
+        createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 8 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-6',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-frontend-3',
+        authorUserId: 'demo-tech-lead',
+        content: 'Good question! We\'re standardizing on Vitest for new React projects. Jest is still used in the legacy codebase.',
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-7',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-data-2',
+        authorUserId: 'demo-dev-sarah',
+        content: 'Where can I find examples of quality check implementations?',
+        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-8',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'assignment',
+        entityId: 'demo-assignment-sarah-data',
+        authorUserId: 'demo-tech-lead',
+        content: 'Nice work on completing the first task! Feel free to reach out if you need help with the DAG implementation.',
+        createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-9',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-backend-3',
+        authorUserId: 'demo-dev-mike',
+        content: 'Are we using Checkstyle or SpotBugs for static analysis?',
+        createdAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 18 * 60 * 60 * 1000).toISOString(),
+      },
+      {
+        id: 'demo-comment-10',
+        workspaceId: DEMO_WORKSPACE_ID,
+        entityType: 'document',
+        entityId: 'demo-doc-backend-3',
+        authorUserId: 'demo-admin-id',
+        content: 'Both! Checkstyle for style and SpotBugs for bug patterns. They\'re configured in the Maven POM.',
+        createdAt: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
+        updatedAt: new Date(Date.now() - 16 * 60 * 60 * 1000).toISOString(),
+      },
     ];
 
     // Set all demo data
@@ -506,7 +798,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     });
     setUsers(prev => {
       const hasDemo = prev.some(u => u.email === DEMO_ADMIN_EMAIL);
-      return hasDemo ? prev : [...prev, demoAdmin, demoDev];
+      return hasDemo ? prev : [...prev, demoAdmin, demoDev, demoDevSarah, demoDevMike, demoTechLead];
     });
     setProjects(prev => {
       const hasDemo = prev.some(p => p.id === 'demo-project-backend');
@@ -518,19 +810,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     });
     setTemplates(prev => {
       const hasDemo = prev.some(t => t.id === 'demo-template-backend');
-      return hasDemo ? prev : [...prev, backendTemplate, frontendTemplate];
+      return hasDemo ? prev : [...prev, backendTemplate, frontendTemplate, dataTemplate];
     });
     setTemplateItems(prev => {
       const hasDemo = prev.some(i => i.id === 'demo-item-backend-1');
-      return hasDemo ? prev : [...prev, ...backendTemplateItems, ...frontendTemplateItems];
+      return hasDemo ? prev : [...prev, ...backendTemplateItems, ...frontendTemplateItems, ...dataTemplateItems];
     });
     setAssignments(prev => {
       const hasDemo = prev.some(a => a.id === 'demo-assignment-completed');
-      return hasDemo ? prev : [...prev, completedAssignment, inProgressAssignment, overdueAssignment];
+      return hasDemo ? prev : [...prev, completedAssignment, inProgressAssignment, overdueAssignment, sarahDataAssignment, mikeFrontendAssignment];
     });
     setAssignmentStatuses(prev => {
       const hasDemo = prev.some(s => s.id === 'demo-status-backend-0');
-      return hasDemo ? prev : [...prev, ...backendStatuses, ...frontendStatuses];
+      return hasDemo ? prev : [...prev, ...backendStatuses, ...frontendStatuses, ...sarahDataStatuses, ...mikeFrontendStatuses];
     });
     setComments(prev => {
       const hasDemo = prev.some(c => c.id === 'demo-comment-1');
