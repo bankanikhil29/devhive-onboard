@@ -183,7 +183,7 @@ export default function Index() {
                   </div>
                   
                   {/* Floating Card Overlay */}
-                  <div className="absolute bottom-6 left-6 p-4 rounded-xl bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 shadow-2xl shadow-marketing-teal/10 animate-float">
+                  <div className="absolute bottom-6 -left-8 p-4 rounded-xl bg-marketing-navy-light/95 backdrop-blur-sm border border-marketing-teal/30 shadow-2xl shadow-marketing-teal/10 animate-float">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-lg bg-marketing-teal/20 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github w-6 h-6 text-marketing-teal">
