@@ -60,6 +60,7 @@ export default function Settings() {
     const formData = new FormData(e.currentTarget);
     const userId = formData.get('userId') as string;
     const templateId = formData.get('templateId') as string;
+    const dueAt = formData.get('dueAt') as string;
 
     if (!userId || !templateId) {
       toast({ title: 'Error', description: 'Please select both user and template', variant: 'destructive' });
@@ -74,6 +75,7 @@ export default function Settings() {
       checklistTemplateId: templateId,
       projectId: template.projectId,
       assignedToUserId: userId,
+      dueAt: dueAt || undefined,
     });
 
     toast({ title: 'Success', description: 'Onboarding assigned successfully' });
@@ -214,6 +216,10 @@ export default function Settings() {
                             })}
                         </SelectContent>
                       </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="assign-due-date">Due Date (Optional)</Label>
+                      <Input id="assign-due-date" name="dueAt" type="date" />
                     </div>
                     <Button type="submit" className="w-full">Assign</Button>
                   </form>

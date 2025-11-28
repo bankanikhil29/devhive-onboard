@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useApp } from '@/contexts/AppContext';
-import { Home, FileText, CheckSquare, Settings, LogOut, Menu, X, Search } from 'lucide-react';
+import { Home, FileText, CheckSquare, Settings, LogOut, Menu, X, Search, BarChart3 } from 'lucide-react';
 
 interface LayoutProps {
   children: ReactNode;
@@ -32,7 +32,10 @@ export const Layout = ({ children }: LayoutProps) => {
     { path: '/dashboard', label: 'Dashboard', icon: Home },
     { path: '/projects', label: 'Projects', icon: FileText },
     { path: '/onboarding', label: 'Onboarding', icon: CheckSquare },
-    ...(currentUser.role === 'admin' ? [{ path: '/settings', label: 'Settings', icon: Settings }] : []),
+    ...(currentUser.role === 'admin' ? [
+      { path: '/insights', label: 'Insights', icon: BarChart3 },
+      { path: '/settings', label: 'Settings', icon: Settings }
+    ] : []),
   ];
 
   return (

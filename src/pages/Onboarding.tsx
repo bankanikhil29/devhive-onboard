@@ -8,11 +8,12 @@ import { Progress } from '@/components/ui/progress';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { EmptyState } from '@/components/EmptyState';
 import { StatusBadge } from '@/components/StatusBadge';
+import { AtRiskBadge } from '@/components/AtRiskBadge';
 import { CheckSquare, Filter } from 'lucide-react';
 import type { OnboardingStatus } from '@/types';
 
 export default function Onboarding() {
-  const { currentUser, assignments, getAssignmentProgress, projects, users, templates } = useApp();
+  const { currentUser, assignments, getAssignmentProgress, projects, users, templates, getAtRiskStatus } = useApp();
   const [filterProject, setFilterProject] = useState<string>('all');
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [sortBy, setSortBy] = useState<string>('date');
@@ -173,6 +174,7 @@ export default function Onboarding() {
                             const assignee = users.find(u => u.id === assignment.assignedToUserId);
                             const project = projects.find(p => p.id === assignment.projectId);
                             const template = templates.find(t => t.id === assignment.checklistTemplateId);
+                            const atRiskStatus = getAtRiskStatus(assignment);
                             
                             return (
                               <tr key={assignment.id} className="border-b last:border-0 hover:bg-muted/50 cursor-pointer" onClick={() => window.location.href = `/onboarding/${assignment.id}`}>
@@ -180,7 +182,10 @@ export default function Onboarding() {
                                 <td className="p-4">{project?.name || 'Unknown'}</td>
                                 <td className="p-4">{template?.name || 'Onboarding'}</td>
                                 <td className="p-4">
-                                  <StatusBadge status={assignment.status} />
+                                  <div className="flex items-center gap-2">
+                                    <StatusBadge status={assignment.status} />
+                                    <AtRiskBadge status={atRiskStatus} />
+                                  </div>
                                 </td>
                                 <td className="p-4">
                                   <div className="flex items-center gap-2">
@@ -207,6 +212,7 @@ export default function Onboarding() {
                     const assignee = users.find(u => u.id === assignment.assignedToUserId);
                     const project = projects.find(p => p.id === assignment.projectId);
                     const template = templates.find(t => t.id === assignment.checklistTemplateId);
+                    const atRiskStatus = getAtRiskStatus(assignment);
                     
                     return (
                       <Link key={assignment.id} to={`/onboarding/${assignment.id}`}>
@@ -219,7 +225,10 @@ export default function Onboarding() {
                                   {project?.name} • {template?.name}
                                 </CardDescription>
                               </div>
-                              <StatusBadge status={assignment.status} />
+                              <div className="flex flex-col gap-2 items-end">
+                                <StatusBadge status={assignment.status} />
+                                <AtRiskBadge status={atRiskStatus} />
+                              </div>
                             </div>
                           </CardHeader>
                           <CardContent className="space-y-2">
