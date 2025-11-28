@@ -180,6 +180,8 @@ export default function Index() {
                       alt="Developer workspace with multiple monitors" 
                       className="w-full h-full object-cover"
                     />
+                    {/* Gradient overlay to blend with background */}
+                    <div className="absolute inset-0 bg-gradient-to-br from-marketing-navy/40 via-marketing-navy/20 to-transparent" />
                   </div>
                   
                   {/* Floating Card Overlay */}
