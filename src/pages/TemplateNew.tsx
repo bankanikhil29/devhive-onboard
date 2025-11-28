@@ -197,14 +197,14 @@ export default function TemplateNew() {
                     <div className="space-y-2">
                       <Label>Linked Document</Label>
                       <Select
-                        value={item.linkedDocumentId || ''}
-                        onValueChange={(value) => handleItemChange(item.tempId, 'linkedDocumentId', value || undefined)}
+                        value={item.linkedDocumentId || 'none'}
+                        onValueChange={(value) => handleItemChange(item.tempId, 'linkedDocumentId', value === 'none' ? undefined : value)}
                       >
                         <SelectTrigger>
                           <SelectValue placeholder="Select document" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="">None</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
                           {projectDocs.map(doc => (
                             <SelectItem key={doc.id} value={doc.id}>
                               {doc.title}

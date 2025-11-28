@@ -106,7 +106,7 @@ export default function Onboarding() {
                       <SelectContent>
                         <SelectItem value="all">All Projects</SelectItem>
                         {projects
-                          .filter(p => p.workspaceId === currentUser.workspaceId)
+                          .filter(p => p.workspaceId === currentUser.workspaceId && p.id && p.id.trim() !== '')
                           .map(p => (
                             <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
                           ))}
