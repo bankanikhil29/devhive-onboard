@@ -180,6 +180,7 @@ export default function Index() {
                       alt="Developer workspace with multiple monitors" 
                       className="w-full h-full object-cover"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
                   </div>
                   
                   {/* Floating Card Overlay */}
